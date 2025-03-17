@@ -1,12 +1,13 @@
---if vim.g.vscode then
---    -- VSCode extension
+if vim.g.vscode then
+   -- VSCode extension
+    -- these ones don't work
     vim.keymap.set('n', '<C-u>', '<C-u>zz')
     vim.keymap.set('n', '<C-d>', '<C-d>zz') 
---else
---    -- ordinary Neovim
+else
+   -- ordinary Neovim
     vim.keymap.set('n', '<C-u>', '<C-u>zz')
     vim.keymap.set('n', '<C-d>', '<C-d>zz') 
---end
+end
 
 --vim.keymap.set('n', '<C-u>', '<C-u>zz')
 --vim.keymap.set('n', '<C-d>', '<C-d>zz') 
