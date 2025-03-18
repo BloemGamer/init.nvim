@@ -13,4 +13,10 @@ return{
     {'neovim/nvim-lspconfig'},
     {'hrsh7th/nvim-cmp'},
     {'hrsh7th/cmp-nvim-lsp'},
+    {'altermo/ultimate-autopair.nvim',
+    event={'InsertEnter','CmdlineEnter'},
+    branch='v0.6', --recommended as each new version will have breaking changes
+    opts={
+        --Config goes here
+    },},
 }
