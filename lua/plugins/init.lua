@@ -19,4 +19,5 @@ return{
     opts={
         --Config goes here
     },},
+    {'tpope/vim-fugitive'},
 }

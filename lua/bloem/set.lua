@@ -19,6 +19,9 @@ vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
+--vim.api.nvim_set_option("clipboard", "unnamedplus")
+
+
 vim.opt.updatetime = 50
 
 -- vim.opt.colorcolumn = "80"
