@@ -10,7 +10,31 @@ return{
     {'nvim-telescope/telescope.nvim',
             tag = '0.1.8', requires = {{'nvim-lua/plenary.nvim'}}
     },
-    {'neovim/nvim-lspconfig'},
+    {
+        "williamboman/mason.nvim",
+        build = ":MasonUpdate", -- optional
+        config = true
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        config = true
+    },
+    {'neovim/nvim-lspconfig',
+        config = function()
+            require("mason-lspconfig").setup {
+                ensure_installed = { "lua_ls", "clangd", "pyright" }, -- change this list
+                automatic_installation = true,
+            }
+
+            local lspconfig = require("lspconfig")
+            local servers = { "lua_ls", "clangd", "pyright"} -- same list here
+
+            for _, server in ipairs(servers) do
+                lspconfig[server].setup({})
+            end
+        end,
+    },
     {'hrsh7th/nvim-cmp'},
     {'hrsh7th/cmp-nvim-lsp'},
     {'altermo/ultimate-autopair.nvim',
