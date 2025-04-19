@@ -33,6 +33,19 @@ return{
             for _, server in ipairs(servers) do
                 lspconfig[server].setup({})
             end
+            if os.getenv("HOME") == nil then
+                lspconfig.lua_ls.setup {
+                  settings = {
+                    Lua = {
+                        workspace = {
+                            library = {
+                                [vim.fn.expand "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Factorio\\doc-html\\node_modules\\.bin"] = true,
+                            },
+                        },
+                    },
+                },
+            }
+            end
         end,
     },
     {'hrsh7th/nvim-cmp'},
