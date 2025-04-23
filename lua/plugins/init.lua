@@ -35,9 +35,9 @@ return{
             for _, server in ipairs(servers) do
                 local opts = {}
 
-                -- Add Factorio-specific settings for lua_ls
+                -- add Factorio-specific settings for lua_ls
                 if server == "lua_ls" then
-                    -- If on Windows (since you're using C:\\...)
+                    -- if on Windows
                     if os.getenv("HOME") == nil then
                     opts.on_new_config = function(new_config, new_root_dir)
                         if new_root_dir:find("Factorio") then
@@ -94,4 +94,4 @@ return{
 
         end
     },
-    }
+}
