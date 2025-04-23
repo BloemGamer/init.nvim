@@ -51,7 +51,7 @@ local cmp = require('cmp')
 
 cmp.setup({
   sources = {
-    {name = 'nvim_lsp'},
+    {name = 'nvim_lsp', 'nvim_lua'},
   },
   snippet = {
     expand = function(args)
@@ -65,4 +65,3 @@ cmp.setup({
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
 })
-
