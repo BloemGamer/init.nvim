@@ -1,12 +1,5 @@
--- NOTE: to make any of this work you need a language server.
--- If you don't know what that is, watch this 5 min video:
--- https://www.youtube.com/watch?v=LaS32vctfOY
-
--- Reserve a space in the gutter
 vim.opt.signcolumn = 'yes'
 
--- Add cmp_nvim_lsp capabilities settings to lspconfig
--- This should be executed before you configure any language server
 vim.diagnostic.config({
     virtual_text = {
         prefix = '*',
@@ -23,8 +16,6 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   require('cmp_nvim_lsp').default_capabilities()
 )
 
--- This is where you enable features that only work
--- if there is a language server active in the file
 vim.api.nvim_create_autocmd('LspAttach', {
   desc = 'LSP actions',
   callback = function(event)
@@ -43,19 +34,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
--- You'll find a list of language servers here:
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
--- These are example language servers. 
 
 local cmp = require('cmp')
 
 cmp.setup({
   sources = {
-    {name = 'nvim_lsp', 'nvim_lua'},
+    {name = 'nvim_lua', 'nvim_lsp' },
   },
   snippet = {
     expand = function(args)
-      -- You need Neovim v0.10 to use vim.snippet
       vim.snippet.expand(args.body)
     end,
   },
@@ -65,3 +52,4 @@ cmp.setup({
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
 })
+
