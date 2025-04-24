@@ -1,27 +1,17 @@
 return{
-    {'nvim-treesitter/nvim-treesitter', build = ":TSUpdate"},
-    {'Mofiqul/vscode.nvim',
-        as = 'vscode',
-        config = function()
-            vim.cmd('colorscheme vscode')
-        end
-    },
-    {'mbbill/undotree'},
-    {'nvim-telescope/telescope.nvim',
-        tag = '0.1.8', requires = {{'nvim-lua/plenary.nvim'}}
-    },
-    {
-        "williamboman/mason.nvim",
-        build = ":MasonUpdate", -- optional
-        config = true
-    },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        dependencies = { "williamboman/mason.nvim" },
-        config = true
-    },
     {
         'neovim/nvim-lspconfig',
+
+        dependencies = {
+        "williamboman/mason-lspconfig.nvim",
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-nvim-lua",
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-path",
+        "hrsh7th/cmp-cmdline",
+        "hrsh7th/nvim-cmp",
+        },
+
         config = function()
             require("mason-lspconfig").setup {
                 ensure_installed = { "lua_ls", "clangd", "pyright" },
@@ -59,39 +49,15 @@ return{
             end
         end,
     },
-    {'hrsh7th/nvim-cmp'},
-    {'hrsh7th/cmp-nvim-lsp'},
-    {'hrsh7th/cmp-nvim-lua'},
-    {'altermo/ultimate-autopair.nvim',
-        event={'InsertEnter','CmdlineEnter'},
-        branch='v0.6', --recommended as each new version will have breaking changes
-        opts={
-            --Config goes here
-        },},
-    {'tpope/vim-fugitive'},
+
     {
-        "ThePrimeagen/harpoon",
-        branch = "harpoon2",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        settings = {
-            save_on_toggle = false,
-            sync_on_ui_close = false,
-            key = function()
-                return vim.loop.cwd()
-            end,
-        },
+        "williamboman/mason.nvim",
+        build = ":MasonUpdate", -- optional
+        config = true
     },
     {
-        "rose-pine/neovim",
-        name = "rose-pine",
-        config = function()
-            require('rose-pine').setup({
-                disable_background = true,
-                styles = {
-                    italic = false,
-                },
-            })
-
-        end
+        "williamboman/mason-lspconfig.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        config = true
     },
 }
