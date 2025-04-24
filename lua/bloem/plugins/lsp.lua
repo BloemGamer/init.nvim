@@ -88,7 +88,8 @@ return{
 
             cmp.setup({
                 sources = {
-                    {name = 'nvim_lsp', 'nvim_lua' },
+                    { name = 'nvim_lsp' },
+                    { name = 'nvim_lua' },
                 },
                 snippet = {
                     expand = function(args)
