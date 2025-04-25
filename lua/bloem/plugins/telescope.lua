@@ -11,10 +11,10 @@ return{
             defaults = {
                 -- Ignore .git directories when searching for files
                 file_ignore_patterns = {
-                    ".git/*",
-                    ".vscode/*",
-                    ".idea/*",
-                    ".venv/*",
+                    "%.git/*",
+                    "%.vscode/*",
+                    "%.idea/*",
+                    "%.venv/*",
                     "__pycache__/*",
                 },
             },
