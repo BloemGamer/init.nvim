@@ -15,11 +15,13 @@ return
                 -- Ignore .git directories when searching for files
                 file_ignore_patterns =
                 {
+                    "%.exe",
                     "%.git/*",
                     "%.vscode/*",
                     "%.idea/*",
                     "%.venv/*",
                     "__pycache__/*",
+                    "%builddir",
                 },
             },
         })
