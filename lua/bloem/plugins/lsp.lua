@@ -1,8 +1,10 @@
-return{
+return
+{
     {
         'neovim/nvim-lspconfig',
 
-        dependencies = {
+        dependencies =
+        {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
             "hrsh7th/cmp-nvim-lsp",
@@ -14,14 +16,17 @@ return{
         },
 
         config = function()
-            require("mason-lspconfig").setup({
-                ensure_installed = {
+            require("mason-lspconfig").setup(
+            {
+                ensure_installed =
+                {
                     "lua_ls",
                     "clangd",
                     "pyright",
                 },
                 automatic_installation = true,
-                handlers = {
+                handlers =
+                {
                     -- Default handler for all servers
                     function(server_name)
                         require("lspconfig")[server_name].setup {}
@@ -30,14 +35,9 @@ return{
                     -- Custom handler for lua_ls
                     ["lua_ls"] = function()
                         local lspconfig = require("lspconfig")
-                        local opts = {
-                            settings = {
-                                Lua = {
-                                    workspace = {
-                                        library = {},
-                                    },
-                                },
-                            },
+                        local opts =
+                        {
+                            settings = { Lua = { workspace = { library = {}, }, }, },
                             on_new_config = function(new_config, new_root_dir)
                                 if vim.loop.os_uname().sysname == "Windows_NT" then
                                     if new_root_dir:find("Factorio") then
@@ -56,8 +56,10 @@ return{
 
             vim.opt.signcolumn = 'yes'
 
-            vim.diagnostic.config({
-                virtual_text = {
+            vim.diagnostic.config(
+            {
+                virtual_text =
+               {
                     prefix = '*',
                     spacing = 2,
                 },
@@ -73,7 +75,8 @@ return{
                 require('cmp_nvim_lsp').default_capabilities()
             )
 
-            vim.api.nvim_create_autocmd('LspAttach', {
+            vim.api.nvim_create_autocmd('LspAttach',
+            {
                 desc = 'LSP actions',
                 callback = function(event)
                     local opts = { buffer = event.buf }
@@ -93,17 +96,21 @@ return{
 
             local cmp = require('cmp')
 
-            cmp.setup({
-                sources = {
+            cmp.setup(
+            {
+                sources =
+                {
                     { name = 'nvim_lsp' },
                     { name = 'nvim_lua' },
                 },
-                snippet = {
+                snippet =
+                {
                     expand = function(args)
                         vim.snippet.expand(args.body)
                     end,
                 },
-                mapping = cmp.mapping.preset.insert({
+                mapping = cmp.mapping.preset.insert(
+                {
                     ['<CR>'] = cmp.mapping.confirm({ select = true }),
                     ['<Tab>'] = cmp.mapping.select_next_item(),
                     ['<S-Tab>'] = cmp.mapping.select_prev_item(),

@@ -1,4 +1,5 @@
-return{
+return
+{
     'nvim-telescope/telescope.nvim',
     tag = '0.1.8',
     requires = {{'nvim-lua/plenary.nvim'}},
@@ -7,10 +8,13 @@ return{
         local telescope = require('telescope')
         local builtin = require('telescope.builtin')
 
-        telescope.setup({
-            defaults = {
+        telescope.setup(
+        {
+            defaults =
+            {
                 -- Ignore .git directories when searching for files
-                file_ignore_patterns = {
+                file_ignore_patterns =
+                {
                     "%.git/*",
                     "%.vscode/*",
                     "%.idea/*",
