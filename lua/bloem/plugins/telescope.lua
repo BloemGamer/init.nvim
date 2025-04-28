@@ -21,7 +21,7 @@ return
                     "%.idea/*",
                     "%.venv/*",
                     "__pycache__/*",
-                    "%builddir",
+                    "%build*",
                 },
             },
         })
