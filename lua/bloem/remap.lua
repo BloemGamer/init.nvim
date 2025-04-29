@@ -14,3 +14,8 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
 vim.keymap.set('x', '<leader>p', '\"_dP')
 
 vim.keymap.set("n", "Q", "<nop>")
+
+vim.keymap.set('n', '<Up>',    '<C-w>k', { noremap = true, silent = true })
+vim.keymap.set('n', '<Down>',  '<C-w>j', { noremap = true, silent = true })
+vim.keymap.set('n', '<Left>',  '<C-w>h', { noremap = true, silent = true })
+vim.keymap.set('n', '<Right>', '<C-w>l', { noremap = true, silent = true })
