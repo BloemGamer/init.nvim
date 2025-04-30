@@ -13,6 +13,7 @@ return
                 ensure_installed =
                 {
                     "cpptools",
+                    "debugpy",
                 },
                 automatic_installation = true,
             })
@@ -47,10 +48,37 @@ return
 
         -- Optional: Alias for C
         dap.configurations.c = dap.configurations.cpp
-    end
 
 
-},
+            dap.adapters.python =
+            {
+                type = "executable",
+                command = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python",
+                args = { "-m", "debugpy.adapter" },
+            }
+
+            dap.configurations.python =
+            {
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Launch file",
+                    program = "${file}",
+                    pythonPath = function()
+                        -- Use virtualenv if available, fallback to system python
+                        local venv_path = os.getenv("VIRTUAL_ENV")
+                        if venv_path then
+                            return venv_path .. "/bin/python3"
+                        else
+                            return "python3"
+                        end
+                    end,
+                },
+            }
+        end
+
+
+    },
     {
         "rcarriga/nvim-dap-ui",
         dependencies =
