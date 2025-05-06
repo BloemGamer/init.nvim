@@ -1,3 +1,5 @@
+local autocmd = vim.api.nvim_create_autocmd
+
 return
 {
     {
@@ -9,10 +11,23 @@ return
     {
         "lukas-reineke/indent-blankline.nvim",
         config = function ()
-            require("ibl").setup({
-                    scope = {
-                        enabled = false
-                    }
+                autocmd('BufEnter', {
+                    callback = function ()
+
+                        if vim.bo.filetype == "lua" then
+                            require("ibl").setup({
+                                scope = {
+                                    enabled = true
+                                }
+                            })
+                        else
+                            require("ibl").setup({
+                                scope = {
+                                    enabled = false
+                                }
+                            })
+                        end
+                    end
                 })
         end
     }
