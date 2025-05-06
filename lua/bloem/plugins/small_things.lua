@@ -1,6 +1,19 @@
 return
 {
-    'altermo/ultimate-autopair.nvim',
-    event={'InsertEnter','CmdlineEnter'},
-    branch='v0.6', --recommended as each new version will have breaking changes
+    {
+        "echasnovski/mini.pairs",
+        config = function ()
+            require("mini.pairs").setup()
+        end
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        config = function ()
+            require("ibl").setup({
+                    scope = {
+                        enabled = false
+                    }
+                })
+        end
+    }
 }
