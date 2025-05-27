@@ -22,6 +22,7 @@ return
                     "%.venv/*",
                     "__pycache__/*",
                     "%/build*",
+                    "%.cache*"
                 },
             },
         })
