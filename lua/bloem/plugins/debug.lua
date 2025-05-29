@@ -73,6 +73,10 @@ return
                             return "python3"
                         end
                     end,
+                    args = function()
+                        local args_string = vim.fn.input('Arguments: ')
+                        return vim.fn.split(args_string, " ", true)
+                    end,
                 },
             }
         end
