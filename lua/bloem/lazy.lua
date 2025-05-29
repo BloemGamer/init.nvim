@@ -27,7 +27,7 @@ require("lazy").setup(
 {
     spec =
     {
-      { import = "bloem.plugins" },
+        { import = "bloem.plugins" },
     },
     install = { colorscheme = { "habamax" } },
     checker = { enabled = true },
