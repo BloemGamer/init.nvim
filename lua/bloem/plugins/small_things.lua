@@ -20,6 +20,12 @@ return
                                     enabled = true
                                 }
                             })
+                        elseif vim.bo.filetype == "python" then
+                            require("ibl").setup({
+                                scope = {
+                                    enabled = true
+                                }
+                            })
                         else
                             require("ibl").setup({
                                 scope = {
