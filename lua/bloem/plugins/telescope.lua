@@ -29,7 +29,8 @@ return
                     ".tscn",
                     ".import",
                     ".svg",
-                    ".godot"
+                    ".godot",
+                    "target"
                 },
             },
         })
