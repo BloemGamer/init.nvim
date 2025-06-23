@@ -2,12 +2,12 @@ local autocmd = vim.api.nvim_create_autocmd
 
 return
 {
-    {
-        "echasnovski/mini.pairs",
-        config = function ()
-            require("mini.pairs").setup()
-        end
-    },
+    --{
+    --    "echasnovski/mini.pairs",
+    --    config = function ()
+    --        require("mini.pairs").setup()
+    --    end
+    --},
     {
         "lukas-reineke/indent-blankline.nvim",
         config = function ()
