@@ -12,6 +12,7 @@ return
                 "c",
                 "cpp",
                 "python",
+                "rust",
                 "lua"
             },
             sync_install = false,
