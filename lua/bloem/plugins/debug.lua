@@ -14,6 +14,7 @@ return
                 {
                     "cpptools",
                     "debugpy",
+                    "codelldb",
                 },
                 automatic_installation = true,
             })
@@ -78,6 +79,42 @@ return
                         return vim.fn.split(args_string, " ", true)
                     end,
                 },
+            }
+
+
+            -- Rust/Codelldb Adapter
+            dap.adapters.codelldb = function(callback, config)
+                local codelldb_path = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/"
+                local adapter_path = codelldb_path .. "adapter/codelldb"
+                local liblldb_path = codelldb_path .. "lldb/lib/liblldb" .. (vim.loop.os_uname().sysname == "Darwin" and ".dylib" or ".so")
+
+                callback({
+                    type = "server",
+                    port = "${port}",
+                    executable = {
+                        command = adapter_path,
+                        args = { "--liblldb", liblldb_path, "--port", "${port}" },
+                        detached = true,
+                    }
+                })
+            end
+
+            dap.configurations.rust = {
+                {
+                    name = "Debug executable",
+                    type = "codelldb",
+                    request = "launch",
+                    program = function()
+                        return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
+                    end,
+                    cwd = "${workspaceFolder}",
+                    stopOnEntry = false,
+                    args = function()
+                        local args_string = vim.fn.input("Arguments: ")
+                        return vim.fn.split(args_string, " ", true)
+                    end,
+                    runInTerminal = false,
+                }
             }
         end
 
