@@ -23,6 +23,7 @@ return
                     "lua_ls",
                     "clangd",
                     "pyright",
+                    "rust_analyzer",
                 },
                 automatic_installation = true,
                 handlers =
@@ -30,6 +31,82 @@ return
                     -- Default handler for all servers
                     function(server_name)
                         require("lspconfig")[server_name].setup {}
+                    end,
+
+
+
+                    -- Custom handler for rust_analyzer with inlay hints
+                    ["rust_analyzer"] = function()
+                        local lspconfig = require("lspconfig")
+                        lspconfig.rust_analyzer.setup({
+                            settings = {
+                                ['rust-analyzer'] = {
+                                    -- Enable inlay hints
+                                    inlayHints = {
+                                        enable = true,
+                                        bindingModeHints = {
+                                            enable = false,
+                                        },
+                                        chainingHints = {
+                                            enable = true,
+                                        },
+                                        closingBraceHints = {
+                                            enable = true,
+                                            minLines = 25,
+                                        },
+                                        closureReturnTypeHints = {
+                                            enable = "never",
+                                        },
+                                        lifetimeElisionHints = {
+                                            enable = "never",
+                                            useParameterNames = false,
+                                        },
+                                        maxLength = 25,
+                                        parameterHints = {
+                                            enable = true,
+                                        },
+                                        reborrowHints = {
+                                            enable = "never",
+                                        },
+                                        renderColons = true,
+                                        typeHints = {
+                                            enable = true,
+                                            hideClosureInitialization = false,
+                                            hideNamedConstructor = false,
+                                        },
+                                    },
+                                    -- Better completion
+                                    completion = {
+                                        addCallArgumentSnippets = true,
+                                        addCallParenthesis = true,
+                                        postfix = {
+                                            enable = true,
+                                        },
+                                    },
+                                    -- Better diagnostics
+                                    diagnostics = {
+                                        enable = true,
+                                    },
+                                    -- Auto-import
+                                    imports = {
+                                        granularity = {
+                                            group = "module",
+                                        },
+                                        prefix = "self",
+                                    },
+                                    -- Cargo settings
+                                    cargo = {
+                                        buildScripts = {
+                                            enable = true,
+                                        },
+                                    },
+                                    -- Proc macro support
+                                    procMacro = {
+                                        enable = true,
+                                    },
+                                }
+                            }
+                        })
                     end,
 
                     -- Custom handler for lua_ls
@@ -62,10 +139,10 @@ return
                {
                     prefix = '*',
                     spacing = 2,
-                },
-                signs = true,
-                underline = true,
-                update_in_insert = false,
+               },
+               signs = true,
+               underline = true,
+               update_in_insert = false,
             })
 
             local lspconfig_defaults = require('lspconfig').util.default_config
@@ -81,6 +158,7 @@ return
                 callback = function(event)
                     local opts = { buffer = event.buf }
 
+
                     vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
                     vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
                     vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
@@ -91,6 +169,27 @@ return
                     vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
                     vim.keymap.set({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({ async = true })<cr>', opts)
                     vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+
+
+                    if vim.lsp.inlay_hint then
+                        vim.keymap.set('n', '<leader>h', function()
+                            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+                        end, opts)
+                    end
+                end,
+            })
+
+            vim.api.nvim_create_autocmd("LspAttach", {
+                group = vim.api.nvim_create_augroup("lsp_attach_inlayhints", { clear = true }),
+                callback = function(args)
+                    if not (args.data and args.data.client_id) then
+                        return
+                    end
+
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if client and client.name == "rust_analyzer" and vim.lsp.inlay_hint then
+                        vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+                    end
                 end,
             })
 
@@ -116,7 +215,10 @@ return
                     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
                 }),
             })
+
         end,
+
+
     },
 
     {
