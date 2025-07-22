@@ -30,7 +30,8 @@ return
                     ".import",
                     ".svg",
                     ".godot",
-                    "target"
+                    "target",
+                    "Cargo.lock",
                 },
             },
         })
