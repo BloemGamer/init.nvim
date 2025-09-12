@@ -128,6 +128,15 @@ return
 
                         lspconfig.lua_ls.setup(opts)
                     end,
+
+					["asm_lsp"] = function()
+						local lspconfig = require("lspconfig")
+						lspconfig.asm_lsp.setup({
+							cmd = { "asm-lsp" }, -- make sure it's in PATH
+							filetypes = { "asm", "s", "S" }, -- support GAS + NASM + preprocessed asm
+							root_dir = lspconfig.util.root_pattern(".git", "."),
+						})
+					end,
                 },
             })
 
