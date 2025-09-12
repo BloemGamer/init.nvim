@@ -116,6 +116,20 @@ return
                     runInTerminal = false,
                 }
             }
+
+			dap.configurations.asm = {
+				{
+					name = "Launch ASM program",
+					type = "codelldb",
+					request = "launch",
+					program = function()
+						return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+					end,
+					cwd = '${workspaceFolder}',
+					stopAtEntry = true,
+				},
+			}
+
         end
 
 
