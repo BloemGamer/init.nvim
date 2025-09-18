@@ -1,0 +1,26 @@
+return {
+	'nvim-lualine/lualine.nvim',
+	--dependencies = { 'nvim-tree/nvim-web-devicons' },
+	config = function ()
+		require('lualine').setup {
+			options = {
+				icons_enabled = false,  -- disable all icons
+				theme = "catppuccin",
+			},
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "branch", "diff", "diagnostics" },
+				lualine_c = {
+					{ "filename" },
+					{
+						function() return require("nvim-navic").get_location() end,
+						cond = function() return require("nvim-navic").is_available() end,
+					},
+				},
+				lualine_x = { "encoding", "fileformat", "filetype" },
+				lualine_y = { "progress" },
+				lualine_z = { "location" },
+			},
+		}
+	end
+}
