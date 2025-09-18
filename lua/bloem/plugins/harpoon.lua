@@ -1,10 +1,8 @@
-return
-{
+return {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
-    settings =
-    {
+    settings = {
         save_on_toggle = false,
         sync_on_ui_close = false,
         key = function()

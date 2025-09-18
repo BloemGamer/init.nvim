@@ -1,3 +1,4 @@
+
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -29,6 +30,6 @@ require("lazy").setup(
     {
         { import = "bloem.plugins" },
     },
-    install = { colorscheme = { "habamax" } },
-    checker = { enabled = true },
+    install = { colorscheme = { "default" } },
+    checker = { enabled = false },
 })

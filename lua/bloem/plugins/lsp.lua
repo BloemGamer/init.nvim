@@ -1,243 +1,363 @@
-return
-{
-    {
-        'neovim/nvim-lspconfig',
+return {
+	{
+		'neovim/nvim-lspconfig',
+		dependencies = {
+			"williamboman/mason.nvim",
+			"williamboman/mason-lspconfig.nvim",
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-nvim-lua",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-cmdline",
+			"hrsh7th/nvim-cmp",
+			"L3MON4D3/LuaSnip", -- Better snippet engine
+		},
 
-        dependencies =
-        {
-            "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-nvim-lua",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-path",
-            "hrsh7th/cmp-cmdline",
-            "hrsh7th/nvim-cmp",
-        },
+		config = function()
+			-- Setup Mason first
+			require("mason").setup()
 
-        config = function()
-            require("mason-lspconfig").setup(
-            {
-                ensure_installed =
-                {
-                    "lua_ls",
-                    "clangd",
-                    "pyright",
-                    "rust_analyzer",
-                },
-                automatic_installation = true,
-                handlers =
-                {
-                    -- Default handler for all servers
-                    function(server_name)
-                        require("lspconfig")[server_name].setup {}
-                    end,
+			-- Enhanced capabilities with nvim-cmp
+			local capabilities = vim.tbl_deep_extend(
+				'force',
+				vim.lsp.protocol.make_client_capabilities(),
+				require('cmp_nvim_lsp').default_capabilities()
+			)
+
+			-- Better diagnostic configuration
+			vim.diagnostic.config({
+				virtual_text = {
+					prefix = '●',
+					spacing = 2,
+					severity_limit = vim.diagnostic.severity.WARN,
+				},
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = '✘',
+						[vim.diagnostic.severity.WARN] = '▲',
+						[vim.diagnostic.severity.HINT] = '⚑',
+						[vim.diagnostic.severity.INFO] = '»',
+					},
+				},
+				underline = true,
+				update_in_insert = false,
+				float = {
+					focusable = false,
+					style = "minimal",
+					border = "rounded",
+					source = "always",
+					header = "",
+					prefix = "",
+				},
+			})
 
 
+			-- Sign column always visible
+			vim.opt.signcolumn = 'yes'
 
-                    -- Custom handler for rust_analyzer with inlay hints
-                    ["rust_analyzer"] = function()
-                        local lspconfig = require("lspconfig")
-                        lspconfig.rust_analyzer.setup({
-                            settings = {
-                                ['rust-analyzer'] = {
-                                    -- Enable inlay hints
-                                    inlayHints = {
-                                        enable = true,
-                                        bindingModeHints = {
-                                            enable = false,
-                                        },
-                                        chainingHints = {
-                                            enable = true,
-                                        },
-                                        closingBraceHints = {
-                                            enable = true,
-                                            minLines = 25,
-                                        },
-                                        closureReturnTypeHints = {
-                                            enable = "never",
-                                        },
-                                        lifetimeElisionHints = {
-                                            enable = "never",
-                                            useParameterNames = false,
-                                        },
-                                        maxLength = 25,
-                                        parameterHints = {
-                                            enable = true,
-                                        },
-                                        reborrowHints = {
-                                            enable = "never",
-                                        },
-                                        renderColons = true,
-                                        typeHints = {
-                                            enable = true,
-                                            hideClosureInitialization = false,
-                                            hideNamedConstructor = false,
-                                        },
-                                    },
-                                    -- Better completion
-                                    completion = {
-                                        addCallArgumentSnippets = true,
-                                        addCallParenthesis = true,
-                                        postfix = {
-                                            enable = true,
-                                        },
-                                    },
-                                    -- Better diagnostics
-                                    diagnostics = {
-                                        enable = true,
-                                    },
-                                    -- Auto-import
-                                    imports = {
-                                        granularity = {
-                                            group = "module",
-                                        },
-                                        prefix = "self",
-                                    },
-                                    -- Cargo settings
-                                    cargo = {
-                                        buildScripts = {
-                                            enable = true,
-                                        },
-                                    },
-                                    -- Proc macro support
-                                    procMacro = {
-                                        enable = true,
-                                    },
-                                }
-                            }
-                        })
-                    end,
+			-- LSP server configurations
+			local lspconfig = require("lspconfig")
 
-                    -- Custom handler for lua_ls
-                    ["lua_ls"] = function()
-                        local lspconfig = require("lspconfig")
-                        local opts =
-                        {
-                            settings = { Lua = { workspace = { library = {}, }, }, },
-                            on_new_config = function(new_config, new_root_dir)
-                                if vim.loop.os_uname().sysname == "Windows_NT" then
-                                    if new_root_dir:find("Factorio") then
-                                        new_config.settings.Lua.workspace.library[
-                                        vim.fn.expand("C:\\Program Files (x86)\\Steam\\steamapps\\common\\Factorio\\doc-html\\node_modules\\.bin")
-                                        ] = true
-                                    end
-                                end
-                            end,
-                        }
+			-- Default setup function
+			local function default_setup(server_name)
+				lspconfig[server_name].setup({
+					capabilities = capabilities,
+				})
+			end
 
-                        lspconfig.lua_ls.setup(opts)
-                    end,
+			-- Server-specific configurations
+			local servers = {
+				lua_ls = {
+					settings = {
+						Lua = {
+							runtime = { version = "LuaJIT" },
+							workspace = {
+								checkThirdParty = false,
+								library = { vim.env.VIMRUNTIME },
+							},
+							completion = { callSnippet = "Replace" },
+							diagnostics = { globals = { "vim" } },
+							hint = { enable = true },
+						},
+					},
+				},
 
-					["asm_lsp"] = function()
-						local lspconfig = require("lspconfig")
-						lspconfig.asm_lsp.setup({
-							cmd = { "asm-lsp" }, -- make sure it's in PATH
-							filetypes = { "asm", "s", "S" }, -- support GAS + NASM + preprocessed asm
-							root_dir = lspconfig.util.root_pattern(".git", "."),
-						})
+				rust_analyzer = {
+					settings = {
+						['rust-analyzer'] = {
+							-- Inlay hints configuration
+							inlayHints = {
+								enable = true,
+								bindingModeHints = { enable = false },
+								chainingHints = { enable = true },
+								closingBraceHints = {
+									enable = true,
+									minLines = 25,
+								},
+								closureReturnTypeHints = { enable = "never" },
+								lifetimeElisionHints = {
+									enable = "never",
+									useParameterNames = false,
+								},
+								maxLength = 25,
+								parameterHints = { enable = true },
+								reborrowHints = { enable = "never" },
+								renderColons = true,
+								typeHints = {
+									enable = true,
+									hideClosureInitialization = false,
+									hideNamedConstructor = false,
+								},
+							},
+							-- Enhanced completion
+							completion = {
+								addCallArgumentSnippets = true,
+								addCallParenthesis = true,
+								postfix = { enable = true },
+								privateEditable = { enable = true },
+							},
+							-- Better diagnostics
+							diagnostics = {
+								enable = true,
+								experimental = { enable = true },
+							},
+							-- Auto-import settings
+							imports = {
+								granularity = { group = "module" },
+								prefix = "self",
+							},
+							-- Cargo and proc macro support
+							cargo = {
+								buildScripts = { enable = true },
+								features = "all",
+							},
+							procMacro = { enable = true },
+							-- Check configuration
+							check = {
+								command = "clippy",
+								features = "all",
+							},
+						}
+					},
+					capabilities = capabilities,
+				},
+
+				pyright = {
+					settings = {
+						python = {
+							analysis = {
+								typeCheckingMode = "basic",
+								autoSearchPaths = true,
+								useLibraryCodeForTypes = true,
+								diagnosticMode = "workspace",
+							},
+						},
+					},
+					capabilities = capabilities,
+				},
+
+				clangd = {
+					cmd = {
+						"clangd",
+						"--background-index",
+						"--clang-tidy",
+						"--header-insertion=iwyu",
+						"--completion-style=detailed",
+						"--function-arg-placeholders",
+						"--fallback-style=llvm",
+					},
+					init_options = {
+						usePlaceholders = true,
+						completeUnimported = true,
+						clangdFileStatus = true,
+					},
+					capabilities = capabilities,
+				},
+
+				asm_lsp = {
+					cmd = { "asm-lsp" },
+					filetypes = { "asm", "s", "S" },
+					root_dir = lspconfig.util.root_pattern(".git", "."),
+					capabilities = capabilities,
+				},
+			}
+
+			-- Setup servers using the handlers table
+			require("mason-lspconfig").setup({
+				ensure_installed = {
+					"lua_ls",
+					"clangd",
+					"pyright",
+					"rust_analyzer",
+				},
+				automatic_installation = true,
+				handlers = {
+					-- Default handler for servers without custom config
+					function(server_name)
+						local config = servers[server_name] or {}
+						config.capabilities = capabilities
+						lspconfig[server_name].setup(config)
 					end,
-                },
-            })
+				},
+			})
 
-            vim.opt.signcolumn = 'yes'
+			-- LSP attach autocommand with keymaps
+			vim.api.nvim_create_autocmd('LspAttach', {
+				desc = 'LSP actions',
+				callback = function(event)
+					local opts = { buffer = event.buf, silent = true }
+					local client = vim.lsp.get_client_by_id(event.data.client_id)
 
-            vim.diagnostic.config(
-            {
-                virtual_text =
-               {
-                    prefix = '*',
-                    spacing = 2,
-               },
-               signs = true,
-               underline = true,
-               update_in_insert = false,
-            })
+					-- Navigation keymaps
+					vim.keymap.set('n', 'K', function()
+						vim.lsp.buf.hover({ border = "rounded" })
+					end, opts)
+					vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+					vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+					vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+					vim.keymap.set('n', 'go', vim.lsp.buf.type_definition, opts)
+					vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+					vim.keymap.set('n', 'gs', function()
+						vim.lsp.buf.signature_help({ border = "rounded" })
+					end, opts)
 
-            local lspconfig_defaults = require('lspconfig').util.default_config
-            lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-                'force',
-                lspconfig_defaults.capabilities,
-                require('cmp_nvim_lsp').default_capabilities()
-            )
+					-- Action keymaps
+					vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
+					vim.keymap.set({ 'n', 'x' }, '<F3>', function()
+						vim.lsp.buf.format({ async = true })
+					end, opts)
+					vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
 
-            vim.api.nvim_create_autocmd('LspAttach',
-            {
-                desc = 'LSP actions',
-                callback = function(event)
-                    local opts = { buffer = event.buf }
+					-- Diagnostic keymaps
+					vim.keymap.set('n', 'gl', vim.diagnostic.open_float, opts)
+					vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+					vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
+					-- Inlay hints toggle (if supported)
+					if vim.lsp.inlay_hint and client and client:supports_method('textDocument/inlayHint') then
+						vim.keymap.set('n', '<leader>h', function()
+							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
+						end, opts)
 
-                    vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-                    vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', opts)
-                    vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<cr>', opts)
-                    vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<cr>', opts)
-                    vim.keymap.set('n', 'go', '<cmd>lua vim.lsp.buf.type_definition()<cr>', opts)
-                    vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', opts)
-                    vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
-                    vim.keymap.set('n', '<F2>', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
-                    vim.keymap.set({ 'n', 'x' }, '<F3>', '<cmd>lua vim.lsp.buf.format({ async = true })<cr>', opts)
-                    vim.keymap.set('n', '<F4>', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+						-- Auto-enable inlay hints for rust_analyzer
+						if client.name == "rust_analyzer" then
+							vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+						end
+					end
+				end,
+			})
 
+			-- Enhanced completion setup
+			local cmp = require('cmp')
+			local luasnip = require('luasnip')
 
-                    if vim.lsp.inlay_hint then
-                        vim.keymap.set('n', '<leader>h', function()
-                            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-                        end, opts)
-                    end
-                end,
-            })
+			cmp.setup({
+				snippet = {
+					expand = function(args)
+						luasnip.lsp_expand(args.body)
+					end,
+				},
+				window = {
+					completion = cmp.config.window.bordered(),
+					documentation = cmp.config.window.bordered(),
+				},
+				mapping = cmp.mapping.preset.insert({
+					['<C-b>'] = cmp.mapping.scroll_docs(-4),
+					['<C-f>'] = cmp.mapping.scroll_docs(4),
+					['<C-Space>'] = cmp.mapping.complete(),
+					['<C-e>'] = cmp.mapping.abort(),
+					['<CR>'] = cmp.mapping.confirm({ select = true }),
+					['<Tab>'] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_next_item()
+						elseif luasnip.expand_or_jumpable() then
+							luasnip.expand_or_jump()
+						else
+							fallback()
+						end
+					end, { 'i', 's' }),
+					['<S-Tab>'] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						elseif luasnip.jumpable(-1) then
+							luasnip.jump(-1)
+						else
+							fallback()
+						end
+					end, { 'i', 's' }),
+				}),
+				sources = cmp.config.sources({
+					{ name = 'nvim_lsp' },
+					{ name = 'luasnip' },
+					{ name = 'nvim_lua' },
+				}, {
+					{ name = 'buffer' },
+					{ name = 'path' },
+				}),
+				formatting = {
+					format = function(entry, vim_item)
+						-- Add source name
+						vim_item.menu = ({
+							nvim_lsp = '[LSP]',
+							luasnip = '[Snippet]',
+							nvim_lua = '[Lua]',
+							buffer = '[Buffer]',
+							path = '[Path]',
+						})[entry.source.name]
+						return vim_item
+					end,
+				},
+				experimental = {
+					ghost_text = true,
+				},
+			})
 
-            vim.api.nvim_create_autocmd("LspAttach", {
-                group = vim.api.nvim_create_augroup("lsp_attach_inlayhints", { clear = true }),
-                callback = function(args)
-                    if not (args.data and args.data.client_id) then
-                        return
-                    end
+			-- Command line completion
+			cmp.setup.cmdline({ '/', '?' }, {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = {
+					{ name = 'buffer' }
+				}
+			})
 
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if client and client.name == "rust_analyzer" and vim.lsp.inlay_hint then
-                        vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
-                    end
-                end,
-            })
+			cmp.setup.cmdline(':', {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = cmp.config.sources({
+					{ name = 'path' }
+				}, {
+					{ name = 'cmdline' }
+				})
+			})
+		end,
+	},
 
-            local cmp = require('cmp')
+	{
+		"williamboman/mason.nvim",
+		build = ":MasonUpdate",
+		opts = {
+			ui = {
+				border = "rounded",
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗"
+				}
+			}
+		}
+	},
 
-            cmp.setup(
-            {
-                sources =
-                {
-                    { name = 'nvim_lsp' },
-                    { name = 'nvim_lua' },
-                },
-                snippet =
-                {
-                    expand = function(args)
-                        vim.snippet.expand(args.body)
-                    end,
-                },
-                mapping = cmp.mapping.preset.insert(
-                {
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-                    ['<Tab>'] = cmp.mapping.select_next_item(),
-                    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-                }),
-            })
+	{
+		"williamboman/mason-lspconfig.nvim",
+		dependencies = { "williamboman/mason.nvim" },
+		opts = {}
+	},
 
-        end,
-
-
-    },
-
-    {
-        "williamboman/mason.nvim",
-        build = ":MasonUpdate", -- optional
-        config = true
-    },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        dependencies = { "williamboman/mason.nvim" },
-        config = true
-    },
+	{
+		"L3MON4D3/LuaSnip",
+		build = "make install_jsregexp",
+		dependencies = { "rafamadriz/friendly-snippets" },
+		config = function()
+			require("luasnip.loaders.from_vscode").lazy_load()
+		end,
+	},
 }

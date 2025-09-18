@@ -1,4 +1,4 @@
-require("new")
+require("bloem")
 
 vim.opt.termguicolors = true
 
