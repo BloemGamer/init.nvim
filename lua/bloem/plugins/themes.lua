@@ -1,9 +1,9 @@
-function ColorPencils(color)
+function ColourPencils(color)
 	color = color or "catppuccin"
 	vim.cmd.colorscheme(color)
 
-	vim.api.nvim_set_hl(0, "Normal", {bg = "none"})
-	vim.api.nvim_set_hl(0, "NormalFloat", {bg = "none"})
+	-- vim.api.nvim_set_hl(0, "Normal", {bg = "none"})
+	-- vim.api.nvim_set_hl(0, "NormalFloat", {bg = "none"})
 
 	vim.cmd("highlight Comment gui=italic")
 	vim.cmd("highlight Keyword gui=bold")
@@ -20,14 +20,14 @@ return {
 					italic = true,
 				},
 			})
-			ColorPencils()
+			ColourPencils()
         end
     },
     {
         "Mofiqul/vscode.nvim",
         as = 'vscode',
         config = function()
-            ColorPencils()
+            ColourPencils()
         end
     },
 	{
@@ -52,7 +52,7 @@ return {
 					telescope = false,
 				},
 			}
-			ColorPencils()
+			ColourPencils()
 		end
 	}
 }
