@@ -12,15 +12,8 @@ return {
 			hijack_netrw = false,
 			renderer = {
 				indent_markers = {
-					enable = false,
+					enable = true,
 					inline_arrows = true,
-					icons = {
-						corner = "└",
-						edge = "│",
-						item = "│",
-						bottom = "─",
-						none = " ",
-					},
 				},
 				icons = {
 					show = {
@@ -32,32 +25,6 @@ return {
 						hidden = false,
 						diagnostics = true,
 						bookmarks = true,
-					},
-					glyphs = {
-						default = " ",
-						symlink = " ",
-						bookmark = "B",
-						modified = "●",
-						hidden = "H",
-						folder = {
-							arrow_closed = "-",
-							arrow_open = "+",
-							default = " ",
-							open = " ",
-							empty = " ",
-							empty_open = " ",
-							symlink = " ",
-							symlink_open = " ",
-						},
-						git = {
-							unstaged = "!",
-							staged = "S",
-							unmerged = "U",
-							renamed = "R",
-							untracked = "★",
-							deleted = "D",
-							ignored = "I",
-						},
 					},
 				},
 			},
