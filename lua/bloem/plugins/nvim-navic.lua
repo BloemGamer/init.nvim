@@ -1,5 +1,6 @@
 return {
 	"SmiteshP/nvim-navic",
+	priority = 1000,
 	dependencies = {
 	 "nvim-tree/nvim-web-devicons",
 	 "neovim/nvim-lspconfig",
