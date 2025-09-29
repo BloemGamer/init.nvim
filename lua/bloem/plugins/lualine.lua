@@ -3,7 +3,6 @@ return {
 		'nvim-lualine/lualine.nvim',
 		dependencies = {
 			'nvim-tree/nvim-web-devicons',
-			'arkav/lualine-lsp-progress',
 			'catppuccin/nvim',
 		},
 		config = function ()
@@ -17,7 +16,6 @@ return {
 					lualine_b = { "branch", "diff", "diagnostics" },
 					lualine_c = {
 						"filename",
-						"lsp_progress",
 						{
 							function() return require("nvim-navic").get_location() end,
 							cond = function() return require("nvim-navic").is_available() end,
