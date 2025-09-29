@@ -4,6 +4,7 @@ return {
 		dependencies = {
 			'nvim-tree/nvim-web-devicons',
 			'arkav/lualine-lsp-progress',
+			'catppuccin/nvim',
 		},
 		config = function ()
 			require('lualine').setup {
