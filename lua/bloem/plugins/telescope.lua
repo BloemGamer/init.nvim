@@ -21,7 +21,7 @@ return {
 					"%.idea/*",
 					"%.venv/*",
 					"__pycache__/*",
-					"%/build*",
+					"%build*",
 					"%.cache*",
 					"%addons*",
 					"*.svg",
