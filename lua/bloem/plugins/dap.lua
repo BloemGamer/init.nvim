@@ -23,9 +23,9 @@ return {
 				command = vim.fn.stdpath("data") .. "/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7",
 			}
 
-			dap.configurations.cpp = {
+			dap.configurations.c = {
 				{
-					name = "Launch file",
+					name = "Debug C file",
 					type = "cpptools",
 					request = "launch",
 					program = function()
@@ -43,8 +43,11 @@ return {
 				},
 			}
 
-			-- Optional: Alias for C
-			dap.configurations.c = dap.configurations.cpp
+			-- Alias for C++ and asm
+			dap.configurations.cpp = dap.configurations.c
+			dap.configurations.cpp[1].name = "Debug C++ file"
+			dap.configurations.asm = dap.configurations.c
+			dap.configurations.asm[1].name = "Debug ASM program"
 
 			dap.adapters.python =
 			{
@@ -57,7 +60,7 @@ return {
 				{
 					type = "python",
 					request = "launch",
-					name = "Launch file",
+					name = "Debug python file",
 					program = "${file}",
 					pythonPath = function()
 						-- Use virtualenv if available, fallback to system python
@@ -95,7 +98,7 @@ return {
 
 			dap.configurations.rust = {
 				{
-					name = "Debug executable",
+					name = "Debug rust file",
 					type = "codelldb",
 					request = "launch",
 					program = function()
@@ -110,20 +113,6 @@ return {
 					runInTerminal = false,
 				}
 			}
-
-			dap.configurations.asm = {
-				{
-					name = "Launch ASM program",
-					type = "codelldb",
-					request = "launch",
-					program = function()
-						return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-					end,
-					cwd = '${workspaceFolder}',
-					stopAtEntry = true,
-				},
-			}
-
 		end
 
 
