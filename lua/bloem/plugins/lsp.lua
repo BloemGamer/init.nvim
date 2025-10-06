@@ -96,7 +96,7 @@ return {
 								},
 								closureReturnTypeHints = { enable = "never" },
 								lifetimeElisionHints = {
-									enable = "never",
+									enable = "always",
 									useParameterNames = false,
 								},
 								maxLength = 25,
@@ -236,7 +236,8 @@ return {
 					-- Inlay hints toggle (if supported)
 					if vim.lsp.inlay_hint and client and client:supports_method('textDocument/inlayHint') then
 						vim.keymap.set('n', '<leader>h', function()
-							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
+							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
+								{ bufnr = event.buf })
 						end, opts)
 
 						-- Auto-enable inlay hints for rust_analyzer
@@ -291,8 +292,8 @@ return {
 					{ name = 'luasnip' },
 					{ name = 'nvim_lua' },
 				}, {
-					{ name = 'buffer' },
-					{ name = 'path' },
+					-- { name = 'buffer' },
+					-- { name = 'path' },
 				}),
 				formatting = {
 					format = function(entry, vim_item)
@@ -301,8 +302,8 @@ return {
 							nvim_lsp = '[LSP]',
 							luasnip = '[Snippet]',
 							nvim_lua = '[Lua]',
-							buffer = '[Buffer]',
-							path = '[Path]',
+							-- buffer = '[Buffer]',
+							-- path = '[Path]',
 						})[entry.source.name]
 						return vim_item
 					end,
