@@ -14,9 +14,23 @@ return {
 					{
 						"c",
 						"cpp",
-						"python",
 						"rust",
-						"lua"
+						"python",
+						"lua",
+						"asm",
+						"bash",
+
+						"json",
+						"toml",
+						"yaml",
+						"tmux",
+						"diff",
+						"regex",
+						"vim",
+						"vimdoc",
+						"markdown",
+						"markdown_inline",
+						"dockerfile"
 					},
 					sync_install = false,
 					auto_install = true,
