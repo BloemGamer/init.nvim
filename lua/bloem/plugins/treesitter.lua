@@ -41,6 +41,28 @@ return {
 					},
 					indent = { enable = true }
 				})
+			configs.install
+			{
+				"c",
+				"cpp",
+				"rust",
+				"python",
+				"lua",
+				"asm",
+				"bash",
+
+				"json",
+				"toml",
+				"yaml",
+				"tmux",
+				"diff",
+				"regex",
+				"vim",
+				"vimdoc",
+				"markdown",
+				"markdown_inline",
+				"dockerfile"
+			}
 		end
 	},
 	{
