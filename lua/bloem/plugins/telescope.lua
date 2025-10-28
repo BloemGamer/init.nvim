@@ -11,29 +11,51 @@ return {
 		local telescope = require('telescope')
 		local builtin = require('telescope.builtin')
 
-		telescope.setup( {
-			defaults = {
-				-- Ignore .git directories when searching for files
+		telescope.setup({
+				defaults = {
+				-- Ignore patterns
 				file_ignore_patterns = {
-					"%.exe$",
-					"%.git/",
-					"%.vscode/",
-					"%.idea/",
-					"%.venv/",
-					"__pycache__/",
-					"build/",
-					"%.cache/",
-					"addons/",
-					"%.svg$",
-					"%.uid$",
-					"%.tscn$",
-					"%.import$",
-					"%.godot$",
-					"target/",
-					"Cargo.lock",
-					"sdkconfig*"
-				}
-			},
+				"%.exe$",
+				"%.git/",
+				"%.vscode/",
+				"%.idea/",
+				"%.venv/",
+				"__pycache__/",
+				"build/",
+				"%.cache/",
+				"addons/",
+				"%.svg$",
+				"%.uid$",
+				"%.tscn$",
+				"%.import$",
+				"%.godot$",
+				"target/",
+				"Cargo.lock",
+				"sdkconfig*",
+				},
+
+				-- ✅ Fix: ensure Telescope closes before opening file
+					mappings = {
+						i = {
+							["<CR>"] = function(prompt_bufnr)
+								local actions = require("telescope.actions")
+									local action_state = require("telescope.actions.state")
+									local entry = action_state.get_selected_entry()
+									actions.close(prompt_bufnr)
+									vim.cmd("edit " .. vim.fn.fnameescape(entry.path))
+									end,
+						},
+						n = {
+							["<CR>"] = function(prompt_bufnr)
+								local actions = require("telescope.actions")
+									local action_state = require("telescope.actions.state")
+									local entry = action_state.get_selected_entry()
+									actions.close(prompt_bufnr)
+									vim.cmd("edit " .. vim.fn.fnameescape(entry.path))
+									end,
+						},
+					},
+				},
 		})
 
 		vim.keymap.set('n', '<leader>pf', function() builtin.find_files({ no_ignore = true }) end, { desc = 'Telescope find files' })
