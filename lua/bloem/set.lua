@@ -42,6 +42,6 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.cmd [[
-  highlight ExtraWhitespace ctermbg=red guibg=red
-  autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+	highlight ExtraWhitespace ctermbg=red guibg=red
+	autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
 ]]
