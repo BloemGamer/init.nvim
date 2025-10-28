@@ -9,7 +9,7 @@ return {
 	},
 	config = function ()
 		local neogit = require("neogit")
-		vim.keymap.set('n', '<leader>gs', ':Neogit kind=vsplit<CR>')
+		vim.keymap.set('n', '<leader>gs', ':Neogit kind=vsplit<CR>', { silent = true })
 		
 	end
 
