@@ -41,12 +41,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
---vim.api.nvim_create_autocmd('BufEnter', {
---    callback = function()
---        if vim.bo.filetype == "asm" then
---            ColorPencils("rose-pine-moon")
---        else
---            ColorPencils()
---        end
---    end
---})
+vim.cmd [[
+  highlight ExtraWhitespace ctermbg=red guibg=red
+  autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+]]
