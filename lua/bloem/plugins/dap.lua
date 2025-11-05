@@ -39,6 +39,16 @@ return {
 							description = "enable pretty printing",
 							ignoreFailures = false,
 						},
+						{
+							text = "set substitute-path /run/host \"\"",
+							description = "Fix distrobox paths",
+							ignoreFailures = false,
+						},
+						{
+							text = "directory " .. vim.fn.getcwd() .. "/src",
+							description = "Add source directory",
+							ignoreFailures = false,
+						},
 					},
 				},
 			}
