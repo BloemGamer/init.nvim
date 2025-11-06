@@ -107,7 +107,36 @@ return {
 				callback = update_context_highlight,
 			})
 		end
-	}
+	},
+	{
+		{
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			branch = "main",
+			dependencies = { "nvim-treesitter/nvim-treesitter" },  -- ensure TS base plugin loaded first
+			config = function()
+				local config = require("nvim-treesitter-textobjects")
+				config.setup {
+					select = {
+						lookahead = true,
+
+						selection_modes = {
+							['@parameter.outer'] = 'v', -- charwise
+							['@function.outer'] = 'V', -- linewise
+							['@class.outer'] = '<c-v>', -- blockwise
+						},
+						include_surrounding_whitespace = false,
+					},
+					-- add move, swap etc if you want
+				}
+				vim.keymap.set({ "x", "o" }, "af", function()
+					require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+				end)
+				vim.keymap.set({ "x", "o" }, "if", function()
+					require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+				end)
+			end
+		}
+	},
 }
 
 
