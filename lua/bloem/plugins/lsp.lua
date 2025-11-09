@@ -161,10 +161,13 @@ return {
 						"clangd",
 						"--background-index",
 						"--clang-tidy",
+						"--clang-tidy-checks=*",
+						"--enable-config",
 						"--header-insertion=iwyu",
 						"--completion-style=detailed",
 						"--function-arg-placeholders",
 						"--fallback-style=llvm",
+						"--pretty",
 					},
 					init_options = {
 						usePlaceholders = true,
