@@ -25,6 +25,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 vim.opt_local.cursorline = true
+vim.o.laststatus = 3
 
 --vim.api.nvim_set_option("clipboard", "unnamedplus")
 
