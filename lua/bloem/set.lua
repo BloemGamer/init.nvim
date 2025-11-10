@@ -27,6 +27,9 @@ vim.opt.isfname:append("@-@")
 vim.opt_local.cursorline = true
 vim.o.laststatus = 3
 
+vim.opt.secure = true
+vim.opt.exrc = true
+
 --vim.api.nvim_set_option("clipboard", "unnamedplus")
 
 
@@ -104,3 +107,5 @@ vim.api.nvim_create_autocmd("CursorMovedI", {
 		vim.lsp.buf.clear_references()
 	end,
 })
+
+
