@@ -17,3 +17,6 @@ vim.keymap.set('n', '<Up>',    '<C-w>k', { noremap = true, silent = true })
 vim.keymap.set('n', '<Down>',  '<C-w>j', { noremap = true, silent = true })
 vim.keymap.set('n', '<Left>',  '<C-w>h', { noremap = true, silent = true })
 vim.keymap.set('n', '<Right>', '<C-w>l', { noremap = true, silent = true })
+
+
+vim.api.nvim_set_keymap('n', '<leader>k', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
