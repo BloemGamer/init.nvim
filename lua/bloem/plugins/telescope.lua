@@ -25,6 +25,8 @@ return {
 					"buildw/",
 					"build*/",
 					"cmake%-build%-debug/",
+					"cmake%-build%-release/",
+					"Testing/",
 					"%.cache/",
 					"addons/",
 					"%.svg$",
