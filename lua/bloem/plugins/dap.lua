@@ -24,8 +24,24 @@ return {
 			}
 
 			dap.configurations.c = {
+				-- {
+				-- 	name = "Debug C file (LLDB)",
+				-- 	type = "codelldb",
+				-- 	request = "launch",
+				-- 	program = function()
+				-- 		return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				-- 	end,
+				-- 	cwd = "${workspaceFolder}",
+				-- 	stopOnEntry = false,
+				--
+				-- 	-- This is where you import your LLDB formatter:
+				-- 	-- initCommands = {
+				-- 	-- 	-- Change to wherever you put your formatter:
+				-- 	-- 	'command script import ' .. vim.fn.getcwd() .. '/lldb_formatter.py',
+				-- 	-- },
+				-- },
 				{
-					name = "Debug C file",
+					name = "Debug C file (cpptools)",
 					type = "cpptools",
 					request = "launch",
 					program = function()
@@ -54,10 +70,14 @@ return {
 			}
 
 			-- Alias for C++ and asm
-			dap.configurations.cpp = dap.configurations.c
-			dap.configurations.cpp[1].name = "Debug C++ file"
-			dap.configurations.asm = dap.configurations.c
-			dap.configurations.asm[1].name = "Debug ASM program"
+			dap.configurations.cpp = vim.deepcopy(dap.configurations.c)
+			dap.configurations.cpp[1].name = "Debug C++ file (LLDB)"
+			dap.configurations.cpp[2].name = "Debug C++ file (cpptools)"
+
+			-- ASM configs
+			dap.configurations.asm = vim.deepcopy(dap.configurations.c)
+			dap.configurations.asm[1].name = "Debug ASM program (LLDB)"
+			dap.configurations.asm[2].name = "Debug ASM program (cpptools)"
 
 			dap.adapters.python =
 			{
