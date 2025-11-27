@@ -30,6 +30,7 @@ function RemoveBackground()
 	vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
 	vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" }) -- ~ characters
 
+	vim.opt.fillchars = { eob = " " } -- Replace ~ with space
 end
 
 return {
