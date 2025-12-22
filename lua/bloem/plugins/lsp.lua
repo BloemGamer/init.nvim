@@ -201,37 +201,37 @@ return {
 					end
 
 
-if client and client.name == "rust-analyzer" then
-  -- Add explicit type to let bindings
-  vim.keymap.set(
-    "n",
-    "<leader>rt",
-    function()
-      vim.lsp.buf.code_action({
-        apply = true,
-        context = {
-          only = { "refactor.rewrite", "quickfix" },
-        },
-      })
-    end,
-    { buffer = event.buf, desc = "Rust: add explicit type" }
-  )
+					if client and client.name == "rust-analyzer" then
+						-- Add explicit type to let bindings
+						vim.keymap.set(
+							"n",
+							"<leader>rt",
+							function()
+								vim.lsp.buf.code_action({
+									apply = true,
+									context = {
+										only = { "refactor.rewrite", "quickfix" },
+									},
+								})
+							end,
+							{ buffer = event.buf, desc = "Rust: add explicit type" }
+						)
 
-  -- Add return type to function
-  vim.keymap.set(
-    "n",
-    "<leader>rr",
-    function()
-      vim.lsp.buf.code_action({
-        apply = true,
-        context = {
-          only = { "refactor.rewrite" },
-        },
-      })
-    end,
-    { buffer = event.buf, desc = "Rust: add return type" }
-  )
-end
+						-- Add return type to function
+						vim.keymap.set(
+							"n",
+							"<leader>rr",
+							function()
+								vim.lsp.buf.code_action({
+									apply = true,
+									context = {
+										only = { "refactor.rewrite" },
+									},
+								})
+							end,
+							{ buffer = event.buf, desc = "Rust: add return type" }
+						)
+					end
 				end,
 
 			})
