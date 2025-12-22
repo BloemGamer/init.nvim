@@ -82,65 +82,7 @@ return {
 					},
 				},
 
-				rust_analyzer = {
-					settings = {
-						['rust-analyzer'] = {
-							-- Inlay hints configuration
-							inlayHints = {
-								enable = true,
-								bindingModeHints = { enable = false },
-								chainingHints = { enable = true },
-								closingBraceHints = {
-									enable = true,
-									minLines = 25,
-								},
-								closureReturnTypeHints = { enable = "never" },
-								lifetimeElisionHints = {
-									enable = "always",
-									useParameterNames = false,
-								},
-								maxLength = 25,
-								parameterHints = { enable = true },
-								reborrowHints = { enable = "never" },
-								renderColons = true,
-								typeHints = {
-									enable = true,
-									hideClosureInitialization = false,
-									hideNamedConstructor = false,
-								},
-							},
-							-- Enhanced completion
-							completion = {
-								addCallArgumentSnippets = true,
-								addCallParenthesis = true,
-								postfix = { enable = true },
-								privateEditable = { enable = true },
-							},
-							-- Better diagnostics
-							diagnostics = {
-								enable = true,
-								experimental = { enable = true },
-							},
-							-- Auto-import settings
-							imports = {
-								granularity = { group = "module" },
-								prefix = "self",
-							},
-							-- Cargo and proc macro support
-							cargo = {
-								buildScripts = { enable = true },
-								features = "all",
-							},
-							procMacro = { enable = true },
-							-- Check configuration
-							check = {
-								command = "clippy",
-								features = "all",
-							},
-						}
-					},
-					capabilities = capabilities,
-				},
+				-- Note: rust_analyzer is now handled by rustaceanvim plugin
 
 				pyright = {
 					settings = {
@@ -199,12 +141,16 @@ return {
 					"lua_ls",
 					"clangd",
 					"pyright",
-					"rust_analyzer",
+					-- rust_analyzer removed - handled by rustaceanvim
 				},
 				automatic_installation = true,
 				handlers = {
 					-- Default handler for servers without custom config
 					function(server_name)
+						-- Skip rust_analyzer as it's handled by rustaceanvim
+						if server_name == "rust_analyzer" then
+							return
+						end
 						local config = servers[server_name] or {}
 						config.capabilities = capabilities
 						lspconfig[server_name].setup(config)
@@ -251,12 +197,43 @@ return {
 								{ bufnr = event.buf })
 						end, opts)
 
-						-- Auto-enable inlay hints for rust_analyzer
-						if client.name == "rust_analyzer" then
-							vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
-						end
+						vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
 					end
+
+
+if client and client.name == "rust-analyzer" then
+  -- Add explicit type to let bindings
+  vim.keymap.set(
+    "n",
+    "<leader>rt",
+    function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = {
+          only = { "refactor.rewrite", "quickfix" },
+        },
+      })
+    end,
+    { buffer = event.buf, desc = "Rust: add explicit type" }
+  )
+
+  -- Add return type to function
+  vim.keymap.set(
+    "n",
+    "<leader>rr",
+    function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = {
+          only = { "refactor.rewrite" },
+        },
+      })
+    end,
+    { buffer = event.buf, desc = "Rust: add return type" }
+  )
+end
 				end,
+
 			})
 
 			-- Enhanced completion setup
@@ -353,6 +330,90 @@ return {
 					pattern = "*",
 					callback = leave_snippet
 				})
+		end,
+	},
+
+	{
+		'mrcjkb/rustaceanvim',
+		version = '^6', -- Recommended
+		lazy = false, -- This plugin is already lazy
+		ft = { 'rust' },
+		config = function()
+			vim.g.rustaceanvim = {
+				tools = {
+					hover_actions = {
+						auto_focus = true,
+					},
+				},
+
+				server = {
+					settings = {
+						["rust-analyzer"] = {
+							-- 🔑 THIS IS THE KEY LINE
+							rustfmt = {
+								extraArgs = { "+nightly" },
+							},
+
+							inlayHints = {
+								bindingModeHints = { enable = false },
+								chainingHints = { enable = true },
+								closingBraceHints = {
+									enable = true,
+									minLines = 25,
+								},
+								closureReturnTypeHints = { enable = "never" },
+								lifetimeElisionHints = {
+									enable = "always",
+									useParameterNames = false,
+								},
+								maxLength = 25,
+								parameterHints = { enable = true },
+								reborrowHints = { enable = "never" },
+								renderColons = true,
+								typeHints = {
+									enable = true,
+									hideClosureInitialization = false,
+									hideNamedConstructor = false,
+								},
+							},
+
+							completion = {
+								callable = {
+									snippets = "fill_arguments",
+								},
+								postfix = { enable = true },
+								privateEditable = { enable = true },
+							},
+
+							diagnostics = {
+								enable = true,
+								experimental = { enable = true },
+							},
+
+							imports = {
+								granularity = { group = "module" },
+								prefix = "self",
+							},
+
+							cargo = {
+								buildScripts = { enable = true },
+								features = "all",
+							},
+
+							procMacro = { enable = true },
+
+							check = {
+								command = "clippy",
+								features = "all",
+							},
+						},
+					},
+				},
+
+				dap = {
+					autoload_configurations = true,
+				},
+			}
 		end,
 	},
 
