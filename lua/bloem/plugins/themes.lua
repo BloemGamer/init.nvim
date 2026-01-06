@@ -44,6 +44,10 @@ return {
 			"rcarriga/nvim-notify",
 		},
 		config = function ()
+			local cache_path = vim.fn.stdpath("cache") .. "/catppuccin" -- hopefully a temporary fix, because otherwise the lualine theme would not load
+			if vim.fn.isdirectory(cache_path) == 1 then
+				vim.fn.delete(cache_path, "rf")
+			end
 			require("catppuccin").setup {
 				flavour = "mocha",
 				integrations = {
