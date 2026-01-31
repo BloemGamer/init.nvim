@@ -4,7 +4,8 @@ return {
 	--tag = '0.1.8',
 	dependencies = {
 		"nvim-lua/plenary.nvim",
-		"BurntSushi/ripgrep"
+		"BurntSushi/ripgrep",
+		{ 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
 	},
 
 	config = function()
@@ -39,7 +40,6 @@ return {
 					"sdkconfig*",
 				},
 
-				-- ✅ Fix: ensure Telescope closes before opening file
 					mappings = {
 						i = {
 							["<CR>"] = function(prompt_bufnr)
