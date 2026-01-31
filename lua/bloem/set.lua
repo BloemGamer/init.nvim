@@ -24,7 +24,7 @@ vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
-vim.opt_local.cursorline = true
+vim.opt_local.cursorline = false
 vim.o.laststatus = 3
 
 vim.opt.secure = true
@@ -36,6 +36,8 @@ vim.opt.exrc = true
 vim.opt.updatetime = 50
 
 -- vim.opt.colorcolumn = "80"
+
+vim.opt.inccommand = "split"
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
