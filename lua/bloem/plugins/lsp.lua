@@ -406,6 +406,11 @@ return {
 				},
 
 				dap = {
+					adapter = {
+						type = 'executable',
+						command = 'lldb-dap',
+						name = 'lldb',
+					},
 					autoload_configurations = true,
 				},
 			}
