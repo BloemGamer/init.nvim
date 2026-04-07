@@ -4,50 +4,52 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         config = function()
             local null_ls = require("null-ls")
-            vim.api.nvim_create_user_command('EnableProjectAutoFormat', function()
-				null_ls.setup({
-					sources = {
-						null_ls.builtins.formatting.clang_format,
-					},
-					on_attach = function(client, bufnr)
-						if client.supports_method("textDocument/formatting") then
-							-- auto-format on save
-							vim.api.nvim_create_autocmd("BufWritePre", {
-								buffer = bufnr,
-								callback = function()
-									vim.lsp.buf.format({ bufnr = bufnr })
-								end,
-							})
-						end
-					end,
-				})
-			end, {})
+            local formatting = null_ls.builtins.formatting
+            local Path = require("plenary.path")
 
-            -- Command to format the whole project
-            vim.api.nvim_create_user_command('FormatProject', function()
-                -- Format open C/C++ buffers
-                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-                    if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_option(buf, "filetype"):match("c") then
-                        if vim.api.nvim_buf_get_option(buf, "modifiable") and vim.api.nvim_buf_get_option(buf, "buftype") == "" then
-                            vim.lsp.buf.format({ bufnr = buf, async = false })
-                            vim.api.nvim_buf_call(buf, function() vim.cmd("write") end)
-                        end
+            -- C/C++ formatter (auto-format on save)
+            null_ls.setup({
+                sources = {
+                    formatting.clang_format, -- C/C++ formatting
+                },
+                on_attach = function(client, bufnr)
+                    if client.supports_method("textDocument/formatting") then
+                        -- Auto-format C/C++ safely on save
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format({ bufnr = bufnr })
+                            end,
+                        })
                     end
+                end,
+            })
+
+            -- User command to format Haskell manually with Fourmolu
+            vim.api.nvim_create_user_command("FormatHaskell", function()
+                local buf = vim.api.nvim_get_current_buf()
+                local file = vim.api.nvim_buf_get_name(buf)
+                local cwd = vim.fn.getcwd()
+                local config = Path:new(cwd, "fourmolu.yaml")
+                local cmd = { "fourmolu", "--mode", "inplace", "-q" }
+
+                if config:exists() then
+                    table.insert(cmd, "--config")
+                    table.insert(cmd, config:absolute())
                 end
 
-                -- Format remaining files on disk
-                local handle = io.popen('find . -type f \\( -name "*.[ch]" -o -name "*.[ch]pp" \\)')
-                if handle then
-                    for file in handle:lines() do
-                        if not vim.fn.bufloaded(file) then
-                            vim.fn.system("clang-format -i " .. file)
-                        end
-                    end
-                    handle:close()
-                end
+                table.insert(cmd, file)
 
-                print("Project formatted!")
+                -- Run Fourmolu on the file
+                vim.fn.system(cmd)
+                vim.cmd("edit") -- reload buffer safely
+                print("Haskell formatted with Fourmolu")
+            end, {})
+
+            -- Optional info command
+            vim.api.nvim_create_user_command("EnableProjectAutoFormat", function()
+                print("Auto-format enabled (C/C++ on save, Haskell via :FormatHaskell)")
             end, {})
         end,
-    }
+    },
 }

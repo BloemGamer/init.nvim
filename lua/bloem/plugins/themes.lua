@@ -40,7 +40,6 @@ return {
 		priority = 1000,
 		dependencies = {
 			"SmiteshP/nvim-navic",
-			'nvim-lualine/lualine.nvim',
 			"rcarriga/nvim-notify",
 		},
 		config = function ()

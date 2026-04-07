@@ -132,6 +132,23 @@ return {
 					root_dir = lspconfig.util.root_pattern(".git", "."),
 					capabilities = capabilities,
 				},
+
+				hls = {
+					filetypes = { "haskell", "lhaskell", "cabal" },
+					root_dir = lspconfig.util.root_pattern(
+						"hie.yaml",
+						"stack.yaml",
+						"cabal.project",
+						"*.cabal",
+						"package.yaml",
+						".git"
+					),
+					settings = {
+						haskell = {
+							formattingProvider = "fourmolu",
+						},
+					},
+				},
 			}
 
 			-- Setup servers using the handlers table
